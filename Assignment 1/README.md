@@ -87,6 +87,4 @@ or use a more advanced model like Random Forest or Gradient Boosting.
 pip install pandas numpy scikit-learn matplotlib
 # put insurance.csv (from Kaggle) in this folder, then:
 jupyter notebook Assignment-1.ipynb
-# or just run the script:
-python Assignment-1.py
 ```
