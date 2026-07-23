@@ -1,10 +1,10 @@
 # Assignment 4: Breast Cancer Diagnosis Prediction using K-Nearest Neighbors
 
-## 🎯 Objective
+## Objective
 
 A healthcare organization wants to predict whether a breast tumor is **Malignant (M)** or **Benign (B)** based on diagnostic measurements taken from digitized images of breast masses. This project develops a **K-Nearest Neighbors (KNN)** classification model to classify tumors accurately.
 
-## 📊 Dataset
+## Dataset
 
 **Breast Cancer Wisconsin (Diagnostic) Dataset**
 
@@ -12,9 +12,9 @@ A healthcare organization wants to predict whether a breast tumor is **Malignant
 - **Size:** 569 rows × 30 numerical features (after dropping `id` and the empty `Unnamed: 32` artifact column)
 - **Target Variable:** `diagnosis` (`M` = Malignant, `B` = Benign)
 
-> ⚠️ The dataset is **not** included in this repository due to licensing restrictions. Download `data.csv` from the Kaggle link above and place it in the same folder as the notebook before running it.
+> The dataset is **not** included in this repository due to licensing restrictions. Download `data.csv` from the Kaggle link above and place it in the same folder as the notebook before running it.
 
-## 📚 Libraries Used
+## Libraries Used
 
 | Library | Purpose |
 |---|---|
@@ -23,7 +23,7 @@ A healthcare organization wants to predict whether a breast tumor is **Malignant
 | matplotlib | Visualization (confusion matrix) |
 | scikit-learn | `StandardScaler`, `LabelEncoder`, `KNeighborsClassifier`, train/test split, evaluation metrics |
 
-## 🔬 Methodology
+## Methodology
 
 1. **Data Understanding** — Loaded the dataset with Pandas, displayed the first five records, identified the 30 numerical diagnostic features and `diagnosis` as the target variable, and reviewed dataset info and summary statistics.
 2. **Data Preprocessing** —
@@ -34,7 +34,7 @@ A healthcare organization wants to predict whether a breast tumor is **Malignant
 3. **Model Development** — Trained a `KNeighborsClassifier` with **K = 5** on the scaled training features and predicted diagnoses on the test set.
 4. **Model Evaluation** — Evaluated with Accuracy, Precision, Recall, F1-Score, and a Confusion Matrix.
 
-## 📈 Results
+## Results
 
 | Metric | Score |
 |---|---|
@@ -58,7 +58,7 @@ A healthcare organization wants to predict whether a breast tumor is **Malignant
 - Precision on the Malignant class (~0.97) is higher than recall (~0.90) — the model misses a few malignant cases (4 false negatives) more often than it wrongly flags a benign one (1 false positive). In a medical screening context, false negatives are the costlier error, so recall is the metric worth focusing on when tuning further.
 - Feature scaling was essential here: since KNN classifies based on distance, unscaled features like `area_mean` (values in the hundreds/thousands) would otherwise dominate the distance calculation over features like `smoothness_mean` (values near 0), regardless of how informative each feature actually is.
 
-## 🏁 Conclusion
+## Conclusion
 
 This project applied a K-Nearest Neighbors (K = 5) classifier to distinguish malignant from benign breast tumors using 30 diagnostic measurements from the Breast Cancer Wisconsin dataset. After encoding the target and standardizing all features, the model achieved strong accuracy, precision, recall, and F1-scores on the held-out test set, showing that nucleus-shape measurements carry a clear diagnostic signal.
 
@@ -66,7 +66,7 @@ Feature scaling was essential for KNN, since it classifies based on distance bet
 
 A key limitation of KNN is that it stores the entire training set and computes distances at prediction time, making it computationally slow and memory-heavy on large datasets; it is also sensitive to irrelevant features and the choice of K.
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 Assignment 4/
@@ -75,7 +75,7 @@ Assignment 4/
 └── README.md              # This file
 ```
 
-## ▶️ How to Run
+## How to Run
 
 1. Download the dataset from [Kaggle](https://www.kaggle.com/datasets/uciml/breast-cancer-wisconsin-data) and place `data.csv` next to the notebook.
 2. Install dependencies: `pip install pandas numpy matplotlib scikit-learn`
