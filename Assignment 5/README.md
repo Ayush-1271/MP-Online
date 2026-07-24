@@ -1,10 +1,10 @@
 # Assignment 5: Employee Attrition Prediction — Decision Tree vs. Random Forest
 
-## 🎯 Objective
+## Objective
 
 A company wants to identify employees who are likely to leave the organization based on their demographic, professional, and work-related attributes. This project develops both a **Decision Tree** and a **Random Forest** classification model to predict employee attrition, and compares their performance.
 
-## 📊 Dataset
+## Dataset
 
 **IBM HR Analytics Employee Attrition & Performance Dataset**
 
@@ -12,9 +12,9 @@ A company wants to identify employees who are likely to leave the organization b
 - **Size:** 1,470 rows × 35 columns (31 columns after removing non-predictive columns)
 - **Target Variable:** `Attrition` (`Yes` = employee left, `No` = employee stayed)
 
-> ⚠️ The dataset is **not** included in this repository due to licensing restrictions. Download `WA_Fn-UseC_-HR-Employee-Attrition.csv` from the Kaggle link above and place it in the same folder as the notebook before running it.
+>  The dataset is **not** included in this repository due to licensing restrictions. Download `WA_Fn-UseC_-HR-Employee-Attrition.csv` from the Kaggle link above and place it in the same folder as the notebook before running it.
 
-## 📚 Libraries Used
+## Libraries Used
 
 | Library | Purpose |
 |---|---|
@@ -23,7 +23,7 @@ A company wants to identify employees who are likely to leave the organization b
 | matplotlib | Visualization (confusion matrices, feature importance) |
 | scikit-learn | `LabelEncoder`, `DecisionTreeClassifier`, `RandomForestClassifier`, train/test split, evaluation metrics |
 
-## 🔬 Methodology
+## Methodology
 
 1. **Data Understanding** — Loaded the dataset with Pandas, displayed the first five records, identified 8 categorical features, 26 numerical features, and `Attrition` as the target variable, and reviewed dataset info and summary statistics.
 2. **Data Preprocessing** —
@@ -37,7 +37,7 @@ A company wants to identify employees who are likely to leave the organization b
    - Both models predicted attrition on the same held-out test set.
 4. **Model Evaluation** — Evaluated both models with Accuracy, Precision, Recall, and F1-Score, generated a Confusion Matrix for each, and plotted Feature Importance for the Random Forest model.
 
-## 📈 Results
+## Results
 
 | Metric | Decision Tree | Random Forest (100 trees) |
 |---|---|---|
@@ -68,14 +68,14 @@ A company wants to identify employees who are likely to leave the organization b
 
 ![Feature Importance](feature_importance.png)
 
-## 🔍 Model Comparison
+## Model Comparison
 
 - **Accuracy:** Random Forest clearly outperforms the Decision Tree overall (84.35% vs. 78.23%), consistent with ensembles reducing the variance and overfitting a single tree is prone to.
 - **The key trade-off — precision vs. recall on the minority class:** Random Forest has *higher precision* (0.55 vs. 0.32) but *lower recall* (0.13 vs. 0.32) on "Attrition = Yes" than the Decision Tree. In other words, Random Forest raises fewer false alarms, but it also misses more employees who actually left (41 false negatives vs. 32). The Decision Tree, despite lower overall accuracy, catches more true attrition cases.
 - **Business implication:** Since missing an at-risk employee is usually costlier than a false alarm, recall on the "Yes" class often matters more than headline accuracy for this problem — a good reminder that accuracy alone can be misleading on imbalanced data (~84% "No" vs. ~16% "Yes").
 - **Feature importance:** According to the Random Forest, `MonthlyIncome`, `Age`, `TotalWorkingYears`, `HourlyRate`, and `DailyRate` are the most influential predictors of attrition, along with `DistanceFromHome`, `YearsAtCompany`, and `OverTime` — broadly consistent with compensation, tenure, and work-life factors driving whether an employee stays or leaves.
 
-## 🏁 Conclusion
+## Conclusion
 
 Comparing the two models on the test set, Random Forest achieved higher overall accuracy and precision than the Decision Tree, but the Decision Tree achieved higher recall on the minority "Attrition = Yes" class — it identified more employees who genuinely left, while Random Forest was more conservative and missed more of them despite its higher accuracy. Which model "performed better" depends on the goal: Random Forest for overall reliability, Decision Tree for catching more at-risk employees.
 
@@ -85,7 +85,7 @@ A key limitation of Decision Trees is sensitivity to the training data — small
 
 A key limitation of Random Forest is reduced interpretability, and, as seen here, a tendency on imbalanced data to favor the majority class for accuracy's sake, hurting recall on the minority class that often matters most in practice.
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 Assignment 5/
@@ -95,7 +95,7 @@ Assignment 5/
 └── README.md                 # This file
 ```
 
-## ▶️ How to Run
+## How to Run
 
 1. Download the dataset from [Kaggle](https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset) and place `WA_Fn-UseC_-HR-Employee-Attrition.csv` next to the notebook.
 2. Install dependencies: `pip install pandas numpy matplotlib scikit-learn`
