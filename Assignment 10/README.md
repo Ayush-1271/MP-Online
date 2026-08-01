@@ -1,4 +1,4 @@
-# Heart Disease Prediction — End-to-End ML Deployment
+# ❤️ Heart Disease Prediction — End-to-End ML Deployment
 
 A machine learning project that predicts whether a patient is at risk of heart disease
 based on clinical parameters, exposed as a REST API using Flask and deployed live on Render.
@@ -7,7 +7,7 @@ based on clinical parameters, exposed as a REST API using Flask and deployed liv
 
 ---
 
-## Dataset
+## 📊 Dataset
 
 [Heart Disease Prediction Dataset — Kaggle (johnsmith88)](https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset)
 
@@ -54,7 +54,7 @@ HeartDiseaseDeployment/
 
 ---
 
-## Model
+## 🧠 Model
 
 - **Algorithm:** Random Forest Classifier (`scikit-learn`)
 - **Split:** 80% train / 20% test, stratified on the target
@@ -67,7 +67,7 @@ reconstruct the correct input format at inference time.
 
 ---
 
-## Running Locally
+## 🚀 Running Locally
 
 ```bash
 # 1. Clone the repo
@@ -92,7 +92,7 @@ The API will start on `http://127.0.0.1:5000`.
 
 ---
 
-## API Reference
+## 📡 API Reference
 
 ### `GET /health`
 Simple health check.
@@ -128,7 +128,7 @@ curl -X POST https://<your-render-url>/predict \
 
 ---
 
-## Deployment (Render)
+## ☁️ Deployment (Render)
 
 This app is deployed on [Render](https://render.com) as a **Web Service**:
 
@@ -151,7 +151,7 @@ This app is deployed on [Render](https://render.com) as a **Web Service**:
 
 ---
 
-## Conclusion
+## 📝 Conclusion
 
 The Random Forest model achieved solid accuracy (~0.75) on a held-out test set after
 removing duplicate records from the dataset, which eliminated a data-leakage issue
@@ -177,7 +177,7 @@ front of clinicians.
 
 ---
 
-## Disclaimer
+## ⚠️ Disclaimer
 
 This project is for educational purposes only and is **not** a certified medical
 diagnostic tool. Predictions should not be used for real clinical decision-making.
