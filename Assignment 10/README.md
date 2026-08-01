@@ -1,183 +1,96 @@
-# ❤️ Heart Disease Prediction — End-to-End ML Deployment
+# Heart Disease Prediction
 
-A machine learning project that predicts whether a patient is at risk of heart disease
-based on clinical parameters, exposed as a REST API using Flask and deployed live on Render.
+Assignment project - trained a model to predict heart disease risk from clinical data, wrapped it in a Flask API, and deployed it on Render.
 
-**Live API URL:** `<< PASTE YOUR RENDER URL HERE AFTER DEPLOYMENT, e.g. https://heart-disease-api.onrender.com >>`
+**Live app:** https://heart-disease-prediction-6wln.onrender.com
+(there's a `/health` route too, and `/predict` for the actual API call)
 
----
+Note: Render's free tier sleeps the app after a while if nobody hits it, so the first request after that might take 30-40 seconds to wake up. That's normal, not a bug.
 
-## 📊 Dataset
+## Dataset
 
-[Heart Disease Prediction Dataset — Kaggle (johnsmith88)](https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset)
+Used the Heart Disease dataset from Kaggle: https://www.kaggle.com/datasets/johnsmith88/heart-disease-dataset
 
-1025 patient records, 13 clinical input features, and a binary `target` column
-(`1` = heart disease present, `0` = no heart disease). Note: the raw CSV contains 723
-duplicate rows; these are dropped during preprocessing to avoid train/test data leakage
-(see `HeartDiseaseDeployment.ipynb` / `train_model.py`).
+1025 rows, 13 input columns + a `target` column (1 = disease, 0 = no disease).
 
-| Feature | Description |
-|---|---|
-| age | Age in years |
-| sex | 1 = male, 0 = female |
-| cp | Chest pain type (0–3) |
-| trestbps | Resting blood pressure (mm Hg) |
-| chol | Serum cholesterol (mg/dl) |
-| fbs | Fasting blood sugar > 120 mg/dl (1 = true) |
-| restecg | Resting ECG results (0–2) |
-| thalach | Maximum heart rate achieved |
-| exang | Exercise-induced angina (1 = yes) |
-| oldpeak | ST depression induced by exercise |
-| slope | Slope of the peak exercise ST segment |
-| ca | Number of major vessels colored by fluoroscopy (0–3) |
-| thal | Thalassemia (0–3) |
+One thing I found while poking around the data - this CSV has 723 duplicate rows in it. If you don't drop them before splitting into train/test, you end up training and testing on the same rows basically, and the model "predicts" with 100% accuracy which is obviously fake. Took me a bit to figure out why my first run gave a perfect score. Dropped duplicates first, then split, and got a more believable ~75%.
 
----
+Columns:
+- age, sex, cp (chest pain type), trestbps (resting BP), chol (cholesterol)
+- fbs (fasting blood sugar), restecg, thalach (max heart rate)
+- exang (exercise induced angina), oldpeak, slope, ca, thal
+- target (what we're predicting)
 
-## 🗂 Repository Structure
+## What's in here
 
 ```
-HeartDiseaseDeployment/
-│
-├── app.py                      # Flask REST API
-├── train_model.py              # Model training script
-├── HeartDiseaseDeployment.ipynb  # Notebook: EDA, preprocessing, training, evaluation
-├── model.pkl                   # Trained model (Random Forest) saved with Joblib
-├── requirements.txt            # Python dependencies
-├── Procfile                    # Start command for Render/Gunicorn
-├── heart.csv                   # Dataset
-├── README.md
-├── templates/
-│   └── index.html              # Simple info page served at "/"
-└── static/                     # (unused / reserved for static assets)
+app.py                       - the Flask API
+train_model.py                - trains the model, run this to regenerate model.pkl
+HeartDiseaseDeployment.ipynb  - notebook with the EDA/preprocessing/training walkthrough
+model.pkl                     - the saved model (joblib)
+requirements.txt
+Procfile                      - tells Render how to start the app
+heart.csv                     - the dataset
+templates/index.html          - simple form UI so you don't need Postman to test it
 ```
 
----
+## Model
 
-## 🧠 Model
+Went with Random Forest since it usually does well on this kind of tabular data without much tuning. Split 80/20, stratified on target so both sets have a similar mix of positive/negative cases.
 
-- **Algorithm:** Random Forest Classifier (`scikit-learn`)
-- **Split:** 80% train / 20% test, stratified on the target
-- **Evaluation metric:** Accuracy Score (see notebook for full classification report)
-- **Result:** ~0.75 accuracy on the held-out, de-duplicated test set
+Accuracy on the test set: ~0.75
 
-The model and the exact feature order it expects are bundled together in `model.pkl`
-(saved with `joblib.dump({'model': ..., 'features': ...}, 'model.pkl')`) so the API can
-reconstruct the correct input format at inference time.
+Not going to pretend that's amazing, but it's a real number after fixing the duplicate-row issue, not the fake 1.0 you get if you skip that step.
 
----
-
-## 🚀 Running Locally
+## Running it locally
 
 ```bash
-# 1. Clone the repo
 git clone https://github.com/<your-username>/HeartDiseaseDeployment.git
 cd HeartDiseaseDeployment
-
-# 2. Create a virtual environment (recommended)
-python -m venv venv
-source venv/bin/activate      # Windows: venv\Scripts\activate
-
-# 3. Install dependencies
 pip install -r requirements.txt
-
-# 4. (Optional) Retrain the model
-python train_model.py
-
-# 5. Run the API
 python app.py
 ```
 
-The API will start on `http://127.0.0.1:5000`.
+Then open `http://127.0.0.1:5000` in a browser, fill the form, hit predict.
 
----
+If you want to retrain the model yourself: `python train_model.py`
 
-## 📡 API Reference
+## API
 
-### `GET /health`
-Simple health check.
+`GET /health` -> `{"status": "ok"}`, mostly just so Render/uptime checks have something to ping.
 
-```json
-{ "status": "ok" }
-```
-
-### `POST /predict`
-Accepts a patient's clinical details as JSON and returns a prediction.
-
-**Request**
+`POST /predict` - send patient values as JSON, get a prediction back.
 
 ```bash
-curl -X POST https://<your-render-url>/predict \
+curl -X POST https://heart-disease-prediction-6wln.onrender.com/predict \
   -H "Content-Type: application/json" \
-  -d '{
-        "age": 52, "sex": 1, "cp": 0, "trestbps": 125, "chol": 212,
-        "fbs": 0, "restecg": 1, "thalach": 168, "exang": 0,
-        "oldpeak": 1.0, "slope": 2, "ca": 2, "thal": 3
-      }'
+  -d '{"age":52,"sex":1,"cp":0,"trestbps":125,"chol":212,"fbs":0,"restecg":1,"thalach":168,"exang":0,"oldpeak":1.0,"slope":2,"ca":2,"thal":3}'
 ```
 
-**Response**
+returns something like:
 
 ```json
 {
-  "prediction": "Heart Disease Detected",
-  "prediction_label": 1,
-  "probability": 0.83
+  "prediction": "No Heart Disease Detected",
+  "prediction_label": 0,
+  "probability": 0.88
 }
 ```
 
----
+## Deploying on Render (in case I need to redo it)
 
-## ☁️ Deployment (Render)
+- New Web Service, connect the GitHub repo
+- Build command: `pip install -r requirements.txt`
+- Start command: `gunicorn app:app`
+- Render sets a PORT env var automatically, app.py already reads it
 
-This app is deployed on [Render](https://render.com) as a **Web Service**:
+## Conclusion
 
-1. Push this repository to a public GitHub repo.
-2. On Render: **New → Web Service** → connect the GitHub repo.
-3. Settings:
-   - **Environment:** Python 3
-   - **Build Command:** `pip install -r requirements.txt`
-   - **Start Command:** `gunicorn app:app` (matches the `Procfile`)
-4. Deploy. Render assigns a public URL and sets the `PORT` environment variable,
-   which `app.py` reads automatically (`os.environ.get("PORT", 5000)`).
-5. Once live, verify with:
-   ```bash
-   curl https://<your-render-url>/health
-   ```
-6. Paste the live URL at the top of this README.
+The model ends up around 75% accuracy after cleaning up the duplicate rows, which is a decent result for a basic Random Forest with no real tuning. Features like chest pain type, number of major vessels (ca), and max heart rate showed up as the most important ones, which lines up with what you'd expect medically.
 
-> **Note:** Render's free tier spins down idle services; the first request after
-> inactivity may take ~30–50 seconds to respond while the instance wakes up.
+Deployment was honestly more annoying than the ML part. Getting the same column order in the API as during training, making sure requirements.txt versions actually matched what Render installs, and remembering that Render assigns its own PORT instead of using 5000 all tripped me up at some point. Also the free tier spinning down when idle threw me off at first since it looked broken when it was just asleep.
+
+Doing this end to end (not just training a model in a notebook and calling it done) made it pretty clear why MLOps is its own thing - a model sitting in a notebook doesn't help anyone, it actually has to run somewhere reliably and be callable by other things.
 
 ---
-
-## 📝 Conclusion
-
-The Random Forest model achieved solid accuracy (~0.75) on a held-out test set after
-removing duplicate records from the dataset, which eliminated a data-leakage issue
-present in the raw Kaggle CSV — without that fix, accuracy appeared as a misleading
-100%. Key predictors of heart disease risk in this dataset include chest pain type
-(`cp`), number of major vessels colored by fluoroscopy (`ca`), thalassemia status
-(`thal`), and maximum heart rate achieved (`thalach`), consistent with established
-clinical understanding of cardiovascular risk factors.
-
-The main challenges during deployment were less about the model itself and more about
-productionizing it: keeping the exact same feature order used in training consistent
-inside the Flask API, handling malformed or incomplete JSON input gracefully, pinning
-dependency versions in `requirements.txt` so the Render build environment matches the
-local one, and configuring the app to bind to the `PORT` environment variable Render
-assigns at runtime rather than a hardcoded port.
-
-This highlights why MLOps matters: a model is only useful once it can be reliably
-packaged, versioned, served, and monitored in a real environment. Practices such as
-saving models with Joblib, pinning dependencies, exposing health-check endpoints, and
-using reproducible deployment platforms like Render turn a one-off notebook experiment
-into a dependable, maintainable service a healthcare organization could actually put in
-front of clinicians.
-
----
-
-## ⚠️ Disclaimer
-
-This project is for educational purposes only and is **not** a certified medical
-diagnostic tool. Predictions should not be used for real clinical decision-making.
+Built for a college assignment. Not an actual medical tool, obviously.
