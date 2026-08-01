@@ -44,9 +44,11 @@ Not going to pretend that's amazing, but it's a real number after fixing the dup
 
 ## Running it locally
 
+## Running Locally
+
 ```bash
-git clone https://github.com/<your-username>/HeartDiseaseDeployment.git
-cd HeartDiseaseDeployment
+git clone https://github.com/Ayush-1271/MP-Online.git
+cd MP-Online/"Assignment 10"
 pip install -r requirements.txt
 python app.py
 ```
